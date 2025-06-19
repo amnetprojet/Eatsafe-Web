@@ -22,7 +22,7 @@ export function Contact() {
   });
 
   const [state, handleFormspreeSubmit] = useForm("xpwrjwlj");
-
+ 
   const contactInfo = [
     {
       icon: Phone,
