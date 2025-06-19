@@ -133,7 +133,7 @@ export function Home() {
             >
               <div className="relative max-w-md mx-auto">
                 <div className="bg-gray-900 rounded-3xl p-4 shadow-2xl">
-                  <img src="/public/app.jpg" alt="" />
+                  <img src="/app.jpg" alt="" />
                 </div>
               </div>
             </motion.div>

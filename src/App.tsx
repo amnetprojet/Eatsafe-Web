@@ -10,8 +10,8 @@ import { FAQ } from "./pages/FAQ";
 import { Legal } from "./pages/Legal";
 import { Privacy } from "./pages/Privacy";
 import { Terms } from "./pages/Terms";
-import { SpeedInsights } from "@vercel/speed-insights/next";
-import { Analytics } from "@vercel/analytics/next"
+import { SpeedInsights } from "@vercel/speed-insights/react";
+import { Analytics } from "@vercel/analytics/react"
 
 function App() {
   return (
