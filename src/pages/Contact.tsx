@@ -27,7 +27,7 @@ export function Contact() {
     {
       icon: Phone,
       title: "Téléphone",
-      value: "+237 6 23 45 67 89",
+      value: "+237 693 40 34 29",
       description: "Lun-Ven 9h-18h",
     },
     {
@@ -364,10 +364,10 @@ export function Contact() {
                   <MessageSquare className="w-6 h-6 text-green-600 dark:text-green-400" />
                   <div>
                     <p className="font-semibold text-gray-900 dark:text-white">
-                      WhatsApp
+                      Téléphone / WhatsApp 
                     </p>
                     <p className="text-gray-600 dark:text-gray-300">
-                      +221 78 167 96 48
+                      +237 693 40 34 29
                     </p>
                   </div>
                 </div>
@@ -378,7 +378,7 @@ export function Contact() {
                       Support Urgence
                     </p>
                     <p className="text-gray-600 dark:text-gray-300">
-                      +221 77 186 05 45
+                      +237 655 83 15 08
                     </p>
                   </div>
                 </div>

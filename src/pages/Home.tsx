@@ -8,6 +8,7 @@ import {
   Star,
   Download,
   Smartphone,
+  Coins,
   MapPin,
   Utensils,
   Truck,
@@ -17,6 +18,12 @@ import {
 export function Home() {
   const features = [
     {
+      icon: Coins,
+      title: "Prix imbattables",
+      description:
+        "Nos tarifs défient toute concurrence, sans compromis sur la qualité.",
+    },
+    {
       icon: Truck,
       title: "Livraison gratuite",
       description: "Pas de frais de livraison pour toutes vos commandes.",
@@ -25,7 +32,7 @@ export function Home() {
       icon: Shield,
       title: "Sécurité garantie",
       description:
-        "Normes sanitaires strictes et contrôles qualité rigoureux pour chaque livraison.",
+        "Normes sanitaires strictes, avec contrôles qualité assurés par l’État et des experts du secteur privé.",
     },
     {
       icon: Clock,
@@ -51,10 +58,49 @@ export function Home() {
       description:
         "Service disponible dans les principales villes du Cameroun.",
     },
+    // {
+    //   icon: Phone,
+    //   title: "Support 24/7",
+    //   description: "Assistance client disponible en français et en anglais.",
+    // },
+  ];
+
+  const dishes = [
     {
-      icon: Phone,
-      title: "Support 24/7",
-      description: "Assistance client disponible en français et en anglais.",
+      name: "Ndolé",
+      image: "/dishes/Ndole_plat_camerounais.jpg",
+      region: "Littoral",
+      description: "Feuilles d'amarante au beurre d’arachide",
+    },
+    {
+      name: "Mitumba",
+      image: "/dishes/Mintumba_plat_camerounais.jpg",
+      region: "Centre",
+      description: "À base de manioc frais fermenté et d’huile de palme rouge",
+    },
+    {
+      name: "Okok",
+      image: "/dishes/okok_plat_camerounais.jpg",
+      region: "Sud",
+      description: "Feuilles de manioc aux arachides",
+    },
+    {
+      name: "Eru",
+      image: "/dishes/eru_plat_camerounais.jpg",
+      region: "Nord-Ouest / Sud-Ouest",
+      description: "Plat à base de feuilles Eru et waterleaf",
+    },
+    {
+      name: "Mil & Gombo",
+      image: "/dishes/mil_gombo_plat_camerounais.jpeg",
+      region: "Nord",
+      description: "Boule de mil accompagnée de sauce gombo",
+    },
+    {
+      name: "Kossam & Beignets",
+      image: "/dishes/kossam_plat_camerounais.jpg",
+      region: "Extrême-Nord",
+      description: "Lait caillé avec beignets locaux",
     },
   ];
 
@@ -95,11 +141,12 @@ export function Home() {
                 </span>
               </h1>
               <p className="text-xl text-green-100 mb-8 leading-relaxed">
-                Commandez vos plats favoris depuis les meilleurs restaurants du
-                Cameroun. Livraison rapide, sécurisée et savoureuse.
+                Commandez vos plats favoris depuis nos unités de production
               </p>
-              <p className="text-lg text-yellow-200 font-semibold mb-6">
-                Livraison gratuite partout à Douala et Yaoundé !
+              <p className="text-md text-yellow-100 mb-8 font-medium italic">
+                Service destinée aux personnes en activité professionnelle dans
+                une organisation et restauration déportée en entreprise
+                (cantine)
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4">
@@ -122,6 +169,9 @@ export function Home() {
                   <ArrowRight className="w-5 h-5" />
                 </motion.button>
               </div>
+              <p className="text-lg mt-5 text-yellow-200 font-semibold mb-6">
+                Livraison gratuite partout à Douala et Yaoundé !
+              </p>
             </motion.div>
 
             {/* Phone Mockup */}
@@ -204,28 +254,7 @@ export function Home() {
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            {[
-              {
-                name: "Ndolé",
-                emoji: "🥬",
-                description: "Plat national camerounais",
-              },
-              {
-                name: "Poulet DG",
-                emoji: "🍗",
-                description: "Poulet aux légumes",
-              },
-              {
-                name: "Poisson braisé",
-                emoji: "🐟",
-                description: "Grillé aux épices",
-              },
-              {
-                name: "Eru",
-                emoji: "🥘",
-                description: "Spécialité du Sud-Ouest",
-              },
-            ].map((dish, index) => (
+            {dishes.map((dish, index) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, scale: 0.9 }}
@@ -234,7 +263,14 @@ export function Home() {
                 transition={{ delay: index * 0.1 }}
                 className="bg-gray-50 dark:bg-gray-800 p-6 rounded-xl text-center hover:shadow-lg transition-shadow"
               >
-                <div className="text-4xl mb-3">{dish.emoji}</div>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mb-1 font-medium italic">
+                  {dish.region}
+                </p>
+                <img
+                  src={dish.image}
+                  alt={dish.name}
+                  className="w-full h-40 object-cover rounded-lg mb-4"
+                />
                 <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
                   {dish.name}
                 </h3>
@@ -255,7 +291,11 @@ export function Home() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <img src="/logo.png" alt="eatsafe-logo" className="w-20 h-20 mx-auto mb-6" />
+            <img
+              src="/logo.png"
+              alt="eatsafe-logo"
+              className="w-20 h-20 mx-auto mb-6"
+            />
             {/* <Smartphone className="w-16 h-16 mx-auto mb-6 text-yellow-300" /> */}
             <h2 className="text-3xl lg:text-4xl font-bold mb-4">
               Téléchargez EatSafe maintenant
