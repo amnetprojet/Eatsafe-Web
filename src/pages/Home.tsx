@@ -8,6 +8,7 @@ import {
   Star,
   Download,
   Smartphone,
+  UtensilsCrossed,
   Coins,
   MapPin,
   Utensils,
@@ -47,6 +48,12 @@ export function Home() {
     //     "Notre propre équipe de livreurs formés et équipés pour une livraison en toute sécurité.",
     // },
     {
+      icon: UtensilsCrossed,
+      title: "Service traiteur à la demande",
+      description:
+        "Créez votre menu personnalisé pour vos événements. Livraison et service inclus selon vos besoins.",
+    },
+    {
       icon: Utensils,
       title: "Cuisine locale",
       description:
@@ -58,11 +65,11 @@ export function Home() {
       description:
         "Service disponible dans les principales villes du Cameroun.",
     },
-    // {
-    //   icon: Phone,
-    //   title: "Support 24/7",
-    //   description: "Assistance client disponible en français et en anglais.",
-    // },
+    {
+      icon: Phone,
+      title: "Support 24/7",
+      description: "Assistance client disponible en français et en anglais.",
+    },
   ];
 
   const dishes = [

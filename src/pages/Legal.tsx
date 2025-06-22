@@ -100,7 +100,7 @@ export function Legal() {
               viewport={{ once: true }}
             >
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
-                Directeur de la publication
+                Direction de la publication
               </h2>
               <div className="bg-gray-50 dark:bg-gray-800 p-6 rounded-xl">
                 <p className="text-gray-700 dark:text-gray-300">
