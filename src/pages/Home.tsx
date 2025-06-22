@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import {
   ArrowRight,
@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 
 export function Home() {
+  const scrollRef = useRef(null);
   const features = [
     {
       icon: Coins,
@@ -124,6 +125,39 @@ export function Home() {
       "_blank"
     );
   };
+
+  const infiniteDishes = [...dishes, ...dishes, ...dishes];
+
+  useEffect(() => {
+    const scrollContainer = scrollRef.current;
+    if (!scrollContainer) return;
+
+    let animationId;
+    let scrollPosition = 0;
+    const scrollSpeed = 0.5; // Vitesse lente et continue
+    const cardWidth = 280; // Largeur d'une card + gap
+    const resetPoint = dishes.length * cardWidth;
+
+    const scroll = () => {
+      scrollPosition += scrollSpeed;
+
+      // Reset la position quand on arrive à la fin du premier set
+      if (scrollPosition >= resetPoint) {
+        scrollPosition = 0;
+      }
+
+      scrollContainer.style.transform = `translateX(-${scrollPosition}px)`;
+      animationId = requestAnimationFrame(scroll);
+    };
+
+    animationId = requestAnimationFrame(scroll);
+
+    return () => {
+      if (animationId) {
+        cancelAnimationFrame(animationId);
+      }
+    };
+  }, [dishes.length]);
 
   return (
     <div className="pt-16">
@@ -243,7 +277,7 @@ export function Home() {
       </section>
 
       {/* Popular Dishes Section */}
-      <section className="py-20 bg-white dark:bg-gray-900">
+      <section className="py-20 bg-white dark:bg-gray-900 overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -260,32 +294,70 @@ export function Home() {
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            {dishes.map((dish, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, scale: 0.9 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-                className="bg-gray-50 dark:bg-gray-800 p-6 rounded-xl text-center hover:shadow-lg transition-shadow"
+          {/* Container du scroll infini */}
+          <div className="relative">
+            {/* Ligne de connexion décorative */}
+            <div className="absolute top-1/2 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gray-200 dark:via-gray-700 to-transparent transform -translate-y-1/2 z-0"></div>
+
+            {/* Points de connexion qui bougent */}
+            <div className="absolute top-1/2 left-0 right-0 transform -translate-y-1/2 z-0">
+              <div className="flex space-x-64">
+                {Array.from({ length: 10 }).map((_, i) => (
+                  <motion.div
+                    key={i}
+                    className="w-2 h-2 bg-green-400 rounded-full shadow-lg"
+                    animate={{
+                      scale: [1, 1.5, 1],
+                      opacity: [0.5, 1, 0.5],
+                    }}
+                    transition={{
+                      duration: 2,
+                      repeat: Infinity,
+                      delay: i * 0.2,
+                    }}
+                  />
+                ))}
+              </div>
+            </div>
+
+            {/* Cards en mouvement */}
+            <div className="relative z-10">
+              <div
+                ref={scrollRef}
+                className="flex gap-6 will-change-transform"
+                style={{ width: "max-content" }}
               >
-                <p className="text-sm text-gray-500 dark:text-gray-400 mb-1 font-medium italic">
-                  {dish.region}
-                </p>
-                <img
-                  src={dish.image}
-                  alt={dish.name}
-                  className="w-full h-40 object-cover rounded-lg mb-4"
-                />
-                <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
-                  {dish.name}
-                </h3>
-                <p className="text-gray-600 dark:text-gray-300 text-sm">
-                  {dish.description}
-                </p>
-              </motion.div>
-            ))}
+                {infiniteDishes.map((dish, index) => (
+                  <motion.div
+                    key={`${dish.name}-${index}`}
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: (index % dishes.length) * 0.1 }}
+                    className="flex-shrink-0 w-64 bg-gray-50 dark:bg-gray-800 p-6 rounded-xl text-center hover:shadow-lg transition-all duration-500 hover:-translate-y-2 hover:bg-white dark:hover:bg-gray-700"
+                  >
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mb-1 font-medium italic">
+                      {dish.region}
+                    </p>
+                    <div className="relative overflow-hidden rounded-lg mb-4">
+                      <img
+                        src={dish.image}
+                        alt={dish.name}
+                        className="w-full h-40 object-cover transition-transform duration-500 hover:scale-105"
+                      />
+                      {/* Effet de brillance */}
+                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+                    </div>
+                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
+                      {dish.name}
+                    </h3>
+                    <p className="text-gray-600 dark:text-gray-300 text-sm">
+                      {dish.description}
+                    </p>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -303,7 +375,6 @@ export function Home() {
               alt="eatsafe-logo"
               className="w-20 h-20 mx-auto mb-6"
             />
-            {/* <Smartphone className="w-16 h-16 mx-auto mb-6 text-yellow-300" /> */}
             <h2 className="text-3xl lg:text-4xl font-bold mb-4">
               Téléchargez EatSafe maintenant
             </h2>
