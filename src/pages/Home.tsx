@@ -14,6 +14,8 @@ import {
   Utensils,
   Truck,
   Phone,
+  Building2,
+  Award,
 } from "lucide-react";
 
 export function Home() {
@@ -34,7 +36,7 @@ export function Home() {
       icon: Shield,
       title: "Sécurité garantie",
       description:
-        "Normes sanitaires strictes, avec contrôles qualité assurés par l’État et des experts du secteur privé.",
+        "Normes sanitaires strictes, avec contrôles qualité assurés par l'État et des experts du secteur privé.",
     },
     {
       icon: Clock,
@@ -78,13 +80,13 @@ export function Home() {
       name: "Ndolé",
       image: "/dishes/Ndole_plat_camerounais.jpg",
       region: "Littoral",
-      description: "Feuilles d'amarante au beurre d’arachide",
+      description: "Feuilles d'amarante au beurre d'arachide",
     },
     {
       name: "Mitumba",
       image: "/dishes/Mintumba_plat_camerounais.jpg",
       region: "Centre",
-      description: "À base de manioc frais fermenté et d’huile de palme rouge",
+      description: "À base de manioc frais fermenté et d'huile de palme rouge",
     },
     {
       name: "Okok",
@@ -403,9 +405,36 @@ export function Home() {
         </div>
       </section>
 
-      {/* Stats Section */}
-      <section className="py-20 bg-gray-900 text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* Company Stats Section */}
+      <section className="py-20 bg-gray-900 text-white relative overflow-hidden">
+        {/* Effet de fond */}
+        <div className="absolute inset-0 bg-gradient-to-r from-gray-900 to-gray-900"></div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+          {/* En-tête avec logo Solutions RH+ */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-12"
+          >
+            <div className="flex items-center justify-center space-x-4 mb-6">
+              <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg">
+                <Building2 className="w-8 h-8 text-white" />
+              </div>
+              <div className="text-left">
+                <h3 className="text-xl font-bold text-white">Solutions RH+</h3>
+                <p className="text-blue-300 text-sm">Food Industry</p>
+              </div>
+            </div>
+            <p className="text-lg text-gray-300 max-w-2xl mx-auto">
+              EatSafe fait partie du{" "}
+              <strong className="text-blue-400">groupe Solutions RH+</strong>,
+              votre partenaire de confiance pour l'innovation alimentaire au
+              Cameroun.
+            </p>
+          </motion.div>
+
+          {/* Stats grid */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
@@ -432,7 +461,7 @@ export function Home() {
             >
               <div className="text-4xl font-bold mb-2 text-yellow-400">4.1</div>
               <div className="text-gray-300 flex items-center justify-center">
-                <Star className="w-5 h-5 mr-1 fill-current text-yellow-400" />
+                <Award className="w-5 h-5 mr-1 fill-current text-yellow-400" />
                 Note moyenne
               </div>
             </motion.div>

@@ -9,6 +9,9 @@ import {
   Mail,
   Phone,
   User,
+  MapPin,
+  Users,
+  Radio,
 } from "lucide-react";
 import { useForm, ValidationError } from "@formspree/react";
 
@@ -19,16 +22,26 @@ export function Partner() {
     phone: "",
     company: "",
     message: "",
+    approximateEmployees: "",
+    knowledgeChannel: "",
+    otherChannel: "",
+    locationType: "maps", // 'maps' ou 'coordinates'
+    mapsUrl: "",
+    latitude: "",
+    longitude: "",
   });
 
   const [state, handleFormspreeSubmit] = useForm("xpwrjwlj");
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
   ) => {
+    const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value,
+      [name]: value,
     }));
   };
 
@@ -36,6 +49,17 @@ export function Partner() {
     e.preventDefault();
     await handleFormspreeSubmit(e);
   };
+
+  const knowledgeChannels = [
+    { value: "reseaux-sociaux", label: "Réseaux sociaux" },
+    { value: "bouche-a-oreille", label: "Bouche à oreille" },
+    { value: "site-web", label: "Site web" },
+    { value: "publicite", label: "Publicité" },
+    { value: "evenement", label: "Événement professionnel" },
+    { value: "partenaire", label: "Recommandation d'un partenaire" },
+    { value: "presse", label: "Article de presse" },
+    { value: "autre", label: "Autre" },
+  ];
 
   const benefits = [
     {
@@ -59,7 +83,7 @@ export function Partner() {
       icon: CheckCircle,
       title: "Production maîtrisée",
       description:
-        "Une cuisine professionnelle dédiée à vos besoins d’entreprise, sans intermédiaires.",
+        "Une cuisine professionnelle dédiée à vos besoins d'entreprise, sans intermédiaires.",
     },
   ];
 
@@ -329,6 +353,7 @@ export function Partner() {
               onSubmit={handleSubmit}
               className="bg-white dark:bg-gray-900 p-8 rounded-2xl shadow-lg"
             >
+              {/* Informations personnelles */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                 <div>
                   <label
@@ -430,7 +455,7 @@ export function Partner() {
                     value={formData.company}
                     onChange={handleChange}
                     className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
-                    placeholder="Nom de votre entreprise"
+                    placeholder="Nom l'entreprise"
                     disabled={state.submitting}
                   />
                   <ValidationError
@@ -440,6 +465,190 @@ export function Partner() {
                     className="text-red-500 text-sm mt-1"
                   />
                 </div>
+              </div>
+
+              {/* Nouveaux champs */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div>
+                  <label
+                    htmlFor="approximateEmployees"
+                    className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                  >
+                    Nombre approximatif d'employés *
+                  </label>
+                  <div className="relative">
+                    <Users className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                    <input
+                      type="number"
+                      id="approximateEmployees"
+                      name="approximateEmployees"
+                      required
+                      min="1"
+                      value={formData.approximateEmployees}
+                      onChange={handleChange}
+                      className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+                      placeholder="Ex: 50"
+                      disabled={state.submitting}
+                    />
+                  </div>
+                  <ValidationError
+                    prefix="Nombre d'employés"
+                    field="approximateEmployees"
+                    errors={state.errors}
+                    className="text-red-500 text-sm mt-1"
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="knowledgeChannel"
+                    className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                  >
+                    Comment avez-vous connu EatSafe ? *
+                  </label>
+                  <div className="relative">
+                    <Radio className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                    <select
+                      id="knowledgeChannel"
+                      name="knowledgeChannel"
+                      required
+                      value={formData.knowledgeChannel}
+                      onChange={handleChange}
+                      className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+                      disabled={state.submitting}
+                    >
+                      <option value="">Sélectionnez un canal</option>
+                      {knowledgeChannels.map((channel) => (
+                        <option key={channel.value} value={channel.value}>
+                          {channel.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <ValidationError
+                    prefix="Canal de connaissance"
+                    field="knowledgeChannel"
+                    errors={state.errors}
+                    className="text-red-500 text-sm mt-1"
+                  />
+                </div>
+              </div>
+
+              {/* Champ "Autre" conditionnel */}
+              {formData.knowledgeChannel === "autre" && (
+                <div className="mb-6">
+                  <label
+                    htmlFor="otherChannel"
+                    className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                  >
+                    Précisez le canal *
+                  </label>
+                  <input
+                    type="text"
+                    id="otherChannel"
+                    name="otherChannel"
+                    required={formData.knowledgeChannel === "autre"}
+                    value={formData.otherChannel}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+                    placeholder="Précisez comment vous avez connu EatSafe"
+                    disabled={state.submitting}
+                  />
+                  <ValidationError
+                    prefix="Autre canal"
+                    field="otherChannel"
+                    errors={state.errors}
+                    className="text-red-500 text-sm mt-1"
+                  />
+                </div>
+              )}
+
+              {/* Localisation */}
+              <div className="mb-6">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Localisation *
+                </label>
+                <div className="mb-4">
+                  <div className="flex space-x-4">
+                    <label className="flex items-center">
+                      <input
+                        type="radio"
+                        name="locationType"
+                        value="maps"
+                        checked={formData.locationType === "maps"}
+                        onChange={handleChange}
+                        className="mr-2 text-red-600"
+                        disabled={state.submitting}
+                      />
+                      URL Google Maps
+                    </label>
+                    <label className="flex items-center">
+                      <input
+                        type="radio"
+                        name="locationType"
+                        value="coordinates"
+                        checked={formData.locationType === "coordinates"}
+                        onChange={handleChange}
+                        className="mr-2 text-red-600"
+                        disabled={state.submitting}
+                      />
+                      Coordonnées GPS
+                    </label>
+                  </div>
+                </div>
+
+                {formData.locationType === "maps" ? (
+                  <div className="relative">
+                    <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                    <input
+                      type="url"
+                      id="mapsUrl"
+                      name="mapsUrl"
+                      required={formData.locationType === "maps"}
+                      value={formData.mapsUrl}
+                      onChange={handleChange}
+                      className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+                      placeholder="https://maps.google.com/..."
+                      disabled={state.submitting}
+                    />
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <input
+                        type="number"
+                        id="latitude"
+                        name="latitude"
+                        step="any"
+                        required={formData.locationType === "coordinates"}
+                        value={formData.latitude}
+                        onChange={handleChange}
+                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+                        placeholder="Latitude (ex: 14.6928)"
+                        disabled={state.submitting}
+                      />
+                    </div>
+                    <div>
+                      <input
+                        type="number"
+                        id="longitude"
+                        name="longitude"
+                        step="any"
+                        required={formData.locationType === "coordinates"}
+                        value={formData.longitude}
+                        onChange={handleChange}
+                        className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+                        placeholder="Longitude (ex: -17.4467)"
+                        disabled={state.submitting}
+                      />
+                    </div>
+                  </div>
+                )}
+                <ValidationError
+                  prefix="Localisation"
+                  field="location"
+                  errors={state.errors}
+                  className="text-red-500 text-sm mt-1"
+                />
               </div>
 
               <div className="mb-6">
