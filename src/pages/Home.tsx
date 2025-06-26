@@ -418,19 +418,22 @@ export function Home() {
             className="text-center mb-12"
           >
             <div className="flex items-center justify-center space-x-4 mb-6">
-              <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg">
-                <Building2 className="w-8 h-8 text-white" />
-              </div>
+              <img
+                src="/solution_rh+.png"
+                alt="Solutions RH+"
+                className="w-16 h-16 object-contain"
+              />
+              {/* <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg"> */}
+              {/* </div> */}
               <div className="text-left">
                 <h3 className="text-xl font-bold text-white">Solutions RH+</h3>
                 <p className="text-blue-300 text-sm">Food Industry</p>
               </div>
             </div>
             <p className="text-lg text-gray-300 max-w-2xl mx-auto">
-              EatSafe fait partie du{" "}
-              <strong className="text-blue-400">groupe Solutions RH+</strong>,
-              votre partenaire de confiance pour l'innovation alimentaire au
-              Cameroun.
+              EatSafe fait partie de{" "}
+              <strong className="text-blue-400"> Solutions RH+ Food Industry</strong>,
+              l'une des entreprises du <strong className="text-blue-400"> Solutions RH+</strong>
             </p>
           </motion.div>
 
