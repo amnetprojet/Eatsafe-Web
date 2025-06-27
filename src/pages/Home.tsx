@@ -1,25 +1,41 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import {
   ArrowRight,
   Shield,
   Clock,
-  Users,
   Star,
   Download,
-  Smartphone,
   UtensilsCrossed,
   Coins,
   MapPin,
   Utensils,
   Truck,
   Phone,
-  Building2,
   Award,
 } from "lucide-react";
 
 export function Home() {
-  const scrollRef = useRef(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const downloadButtonRef = useRef<HTMLButtonElement>(null);
+
+  const [showTooltip, setShowTooltip] = useState(false);
+
+  // Fermer le tooltip quand on clique en dehors
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (downloadButtonRef.current && event.target instanceof Node && 
+          !downloadButtonRef.current.contains(event.target)) {
+        setShowTooltip(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
   const features = [
     {
       icon: Coins,
@@ -161,8 +177,89 @@ export function Home() {
     };
   }, [dishes.length]);
 
+  // Composant Tooltip avec effet liquid glass
+  const LiquidGlassTooltip = ({ show, children }) => {
+    if (!show) return null;
+
+    return (
+      <div className="absolute -top-16 left-1/2 transform -translate-x-1/2 z-50 animate-fadeIn">
+        <div className="relative">
+          {/* Effet liquid glass */}
+          <div className="relative backdrop-blur-xl bg-white/20 border border-white/30 rounded-2xl px-6 py-3 shadow-2xl animate-glassShine">
+            {/* Gradient overlay pour l'effet glass */}
+            <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent rounded-2xl"></div>
+
+            {/* Contenu */}
+            <div className="relative z-10">
+              <p className="text-white font-medium text-sm whitespace-nowrap drop-shadow-lg">
+                {children}
+              </p>
+            </div>
+
+            {/* Flèche */}
+            <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2">
+              <div className="w-4 h-4 backdrop-blur-xl bg-white/20 border-r border-b border-white/30 rotate-45"></div>
+            </div>
+          </div>
+
+          {/* Effet de brillance animé */}
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent rounded-2xl transform skew-x-12 animate-shimmer"></div>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="pt-16">
+      <style jsx>{`
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+            transform: translate(-50%, 10px) scale(0.8);
+          }
+          to {
+            opacity: 1;
+            transform: translate(-50%, 0) scale(1);
+          }
+        }
+
+        @keyframes glassShine {
+          0%,
+          100% {
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+          }
+          50% {
+            box-shadow: 0 25px 50px -12px rgba(255, 255, 255, 0.1);
+          }
+        }
+
+        @keyframes shimmer {
+          0% {
+            transform: translateX(-100%) skewX(12deg);
+            opacity: 0;
+          }
+          50% {
+            opacity: 0.5;
+          }
+          100% {
+            transform: translateX(100%) skewX(12deg);
+            opacity: 0;
+          }
+        }
+
+        .animate-fadeIn {
+          animation: fadeIn 0.3s ease-out;
+        }
+
+        .animate-glassShine {
+          animation: glassShine 2s ease-in-out infinite;
+        }
+
+        .animate-shimmer {
+          animation: shimmer 3s ease-in-out infinite;
+        }
+      `}</style>
+
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-green-600 via-red-600 to-red-500 text-white overflow-hidden">
         <div className="absolute inset-0 bg-black/30"></div>
@@ -194,13 +291,20 @@ export function Home() {
 
               <div className="flex flex-col sm:flex-row gap-4">
                 <motion.button
+                  ref={downloadButtonRef}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  onClick={handleDownload}
-                  className="bg-white text-green-700 px-8 py-4 rounded-lg font-semibold flex items-center justify-center space-x-2 hover:bg-green-50 transition-colors shadow-lg"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setShowTooltip(!showTooltip);
+                  }}
+                  className="relative bg-white text-green-700 px-8 py-4 rounded-lg font-semibold flex items-center justify-center space-x-2 hover:bg-green-50 transition-colors shadow-lg"
                 >
                   <Download className="w-5 h-5" />
                   <span>Télécharger l'app</span>
+                  <LiquidGlassTooltip show={showTooltip}>
+                    Bientôt disponible sur vos plateformes de téléchargement
+                  </LiquidGlassTooltip>
                 </motion.button>
                 <motion.button
                   whileHover={{ scale: 1.05 }}
@@ -432,10 +536,13 @@ export function Home() {
             </div>
             <p className="text-lg text-gray-300 max-w-2xl mx-auto">
               EatSafe fait partie de{" "}
-              <strong className="text-blue-400"> Solutions RH+ Food Industry</strong>,
-              l'une des entreprises du groupe des entreprises de <strong className="text-blue-400"> Solutions RH+</strong>
+              <strong className="text-blue-400">
+                {" "}
+                Solutions RH+ Food Industry
+              </strong>
+              , l'une des entreprises du groupe des entreprises de{" "}
+              <strong className="text-blue-400"> Solutions RH+</strong>
             </p>
-            
           </motion.div>
 
           {/* Stats grid */}
