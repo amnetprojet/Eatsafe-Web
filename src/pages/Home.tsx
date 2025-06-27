@@ -433,7 +433,7 @@ export function Home() {
             <p className="text-lg text-gray-300 max-w-2xl mx-auto">
               EatSafe fait partie de{" "}
               <strong className="text-blue-400"> Solutions RH+ Food Industry</strong>,
-              l'une des entreprises du <strong className="text-blue-400"> Solutions RH+</strong>
+              l'une des entreprises du groupe des entreprises de <strong className="text-blue-400"> Solutions RH+</strong>
             </p>
           </motion.div>
 
