@@ -435,6 +435,7 @@ export function Home() {
               <strong className="text-blue-400"> Solutions RH+ Food Industry</strong>,
               l'une des entreprises du groupe des entreprises de <strong className="text-blue-400"> Solutions RH+</strong>
             </p>
+            
           </motion.div>
 
           {/* Stats grid */}
