@@ -13,6 +13,7 @@ import {
   Truck,
   Phone,
   Award,
+  CheckCircle,
 } from "lucide-react";
 
 export function Home() {
@@ -20,19 +21,25 @@ export function Home() {
   const downloadButtonRef = useRef<HTMLButtonElement>(null);
 
   const [showTooltip, setShowTooltip] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
+  const [downloadProgress, setDownloadProgress] = useState(0);
+  const [downloadComplete, setDownloadComplete] = useState(false);
 
   // Fermer le tooltip quand on clique en dehors
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (downloadButtonRef.current && event.target instanceof Node && 
-          !downloadButtonRef.current.contains(event.target)) {
+      if (
+        downloadButtonRef.current &&
+        event.target instanceof Node &&
+        !downloadButtonRef.current.contains(event.target)
+      ) {
         setShowTooltip(false);
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
@@ -60,12 +67,6 @@ export function Home() {
       description:
         "Livraison rapide et fiable dans toute la ville de Douala et Yaoundé.",
     },
-    // {
-    //   icon: Users,
-    //   title: "Livreurs professionnels",
-    //   description:
-    //     "Notre propre équipe de livreurs formés et équipés pour une livraison en toute sécurité.",
-    // },
     {
       icon: UtensilsCrossed,
       title: "Service traiteur à la demande",
@@ -137,17 +138,71 @@ export function Home() {
     );
   };
 
-  const handleDownload = () => {
-    const link = document.createElement('a');
-    link.href = '/app-release.apk';
-    link.download = 'EatSafe.apk';
-    document.body.appendChild(link);
-    
-    // Déclencher le téléchargement
-    link.click();
-    
-    // Nettoyer
-    document.body.removeChild(link);
+  const handleDownload = async () => {
+    if (isDownloading) return;
+
+    setIsDownloading(true);
+    setDownloadProgress(0);
+    setDownloadComplete(false);
+
+    try {
+      // Simulation du téléchargement avec XMLHttpRequest pour suivre le progrès
+      const xhr = new XMLHttpRequest();
+
+      xhr.open("GET", "/app-release.apk", true);
+      xhr.responseType = "blob";
+
+      xhr.onprogress = (event) => {
+        if (event.lengthComputable) {
+          const percentComplete = (event.loaded / event.total) * 100;
+          setDownloadProgress(percentComplete);
+        }
+      };
+
+      xhr.onload = () => {
+        if (xhr.status === 200) {
+          setDownloadProgress(100);
+          setDownloadComplete(true);
+
+          // Créer le lien de téléchargement
+          const blob = xhr.response;
+          const url = window.URL.createObjectURL(blob);
+          const link = document.createElement("a");
+          link.href = url;
+          link.download = "EatSafe.apk";
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          window.URL.revokeObjectURL(url);
+
+          // Réinitialiser après 2 secondes
+          setTimeout(() => {
+            setIsDownloading(false);
+            setDownloadProgress(0);
+            setDownloadComplete(false);
+          }, 2000);
+        }
+      };
+
+      xhr.onerror = () => {
+        // En cas d'erreur, utiliser la méthode classique
+        const link = document.createElement("a");
+        link.href = "/app-release.apk";
+        link.download = "EatSafe.apk";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        setIsDownloading(false);
+        setDownloadProgress(0);
+      };
+
+      xhr.send();
+    } catch (error) {
+      console.error("Erreur de téléchargement:", error);
+      setIsDownloading(false);
+      setDownloadProgress(0);
+    }
   };
 
   const infiniteDishes = [...dishes, ...dishes, ...dishes];
@@ -158,14 +213,13 @@ export function Home() {
 
     let animationId;
     let scrollPosition = 0;
-    const scrollSpeed = 0.5; // Vitesse lente et continue
-    const cardWidth = 280; // Largeur d'une card + gap
+    const scrollSpeed = 0.5;
+    const cardWidth = 280;
     const resetPoint = dishes.length * cardWidth;
 
     const scroll = () => {
       scrollPosition += scrollSpeed;
 
-      // Reset la position quand on arrive à la fin du premier set
       if (scrollPosition >= resetPoint) {
         scrollPosition = 0;
       }
@@ -190,25 +244,17 @@ export function Home() {
     return (
       <div className="absolute -top-16 left-1/2 transform -translate-x-1/2 z-50 animate-fadeIn">
         <div className="relative">
-          {/* Effet liquid glass */}
           <div className="relative backdrop-blur-xl bg-white/20 border border-white/30 rounded-2xl px-6 py-3 shadow-2xl animate-glassShine">
-            {/* Gradient overlay pour l'effet glass */}
             <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent rounded-2xl"></div>
-
-            {/* Contenu */}
             <div className="relative z-10">
               <p className="text-white font-medium text-sm whitespace-nowrap drop-shadow-lg">
                 {children}
               </p>
             </div>
-
-            {/* Flèche */}
             <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2">
               <div className="w-4 h-4 backdrop-blur-xl bg-white/20 border-r border-b border-white/30 rotate-45"></div>
             </div>
           </div>
-
-          {/* Effet de brillance animé */}
           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent rounded-2xl transform skew-x-12 animate-shimmer"></div>
         </div>
       </div>
@@ -253,6 +299,25 @@ export function Home() {
           }
         }
 
+        @keyframes spin {
+          0% {
+            transform: rotate(0deg);
+          }
+          100% {
+            transform: rotate(360deg);
+          }
+        }
+
+        @keyframes pulse {
+          0%,
+          100% {
+            opacity: 1;
+          }
+          50% {
+            opacity: 0.5;
+          }
+        }
+
         .animate-fadeIn {
           animation: fadeIn 0.3s ease-out;
         }
@@ -263,6 +328,14 @@ export function Home() {
 
         .animate-shimmer {
           animation: shimmer 3s ease-in-out infinite;
+        }
+
+        .animate-spin {
+          animation: spin 1s linear infinite;
+        }
+
+        .animate-pulse {
+          animation: pulse 2s infinite;
         }
       `}</style>
 
@@ -296,39 +369,40 @@ export function Home() {
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4">
-                {/* <motion.button
-                  ref={downloadButtonRef}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setShowTooltip(!showTooltip);
-                  }}
-                  className="relative bg-white text-green-700 px-8 py-4 rounded-lg font-semibold flex items-center justify-center space-x-2 hover:bg-green-50 transition-colors shadow-lg"
-                >
-                  <Download className="w-5 h-5" />
-                  <span>Télécharger l'app</span>
-                  <LiquidGlassTooltip show={showTooltip}>
-                    Bientôt disponible sur vos plateformes de téléchargement
-                  </LiquidGlassTooltip>
-                </motion.button> */}
                 <motion.button
-                  // ref={downloadButtonRef}
-                  // whileHover={{ scale: 1.05 }}
-                  // whileTap={{ scale: 0.95 }}
-                  // onClick={(e) => {
-                  //   e.stopPropagation();
-                  //   setShowTooltip(!showTooltip);
-                  // }}
+                  whileHover={{ scale: isDownloading ? 1 : 1.05 }}
+                  whileTap={{ scale: isDownloading ? 1 : 0.95 }}
                   onClick={handleDownload}
-                  className="relative bg-white text-green-700 px-8 py-4 rounded-lg font-semibold flex items-center justify-center space-x-2 hover:bg-green-50 transition-colors shadow-lg"
+                  disabled={isDownloading}
+                  className="relative bg-white text-green-700 px-8 py-4 rounded-lg font-semibold flex items-center justify-center space-x-2 hover:bg-green-50 transition-colors shadow-lg overflow-hidden"
                 >
-                  <Download className="w-5 h-5" />
-                  <span>Télécharger l'app</span>
-                  {/* <LiquidGlassTooltip show={showTooltip}>
-                    Bientôt disponible sur vos plateformes de téléchargement
-                  </LiquidGlassTooltip> */}
+                  {/* Barre de progression en arrière-plan */}
+                  {isDownloading && (
+                    <div
+                      className="absolute inset-0 bg-green-200 transition-all duration-300 ease-out"
+                      style={{ width: `${downloadProgress}%` }}
+                    />
+                  )}
+
+                  {/* Contenu du bouton */}
+                  <div className="relative z-10 flex items-center space-x-2">
+                    {downloadComplete ? (
+                      <CheckCircle className="w-5 h-5 text-green-600" />
+                    ) : isDownloading ? (
+                      <div className="w-5 h-5 border-2 border-green-600 border-t-transparent rounded-full animate-spin" />
+                    ) : (
+                      <Download className="w-5 h-5" />
+                    )}
+                    <span>
+                      {downloadComplete
+                        ? "Téléchargement terminé !"
+                        : isDownloading
+                        ? `Téléchargement... ${Math.round(downloadProgress)}%`
+                        : "Télécharger l'app"}
+                    </span>
+                  </div>
                 </motion.button>
+
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
@@ -425,10 +499,8 @@ export function Home() {
 
           {/* Container du scroll infini */}
           <div className="relative">
-            {/* Ligne de connexion décorative */}
             <div className="absolute top-1/2 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gray-200 dark:via-gray-700 to-transparent transform -translate-y-1/2 z-0"></div>
 
-            {/* Points de connexion qui bougent */}
             <div className="absolute top-1/2 left-0 right-0 transform -translate-y-1/2 z-0">
               <div className="flex space-x-64">
                 {Array.from({ length: 10 }).map((_, i) => (
@@ -449,7 +521,6 @@ export function Home() {
               </div>
             </div>
 
-            {/* Cards en mouvement */}
             <div className="relative z-10">
               <div
                 ref={scrollRef}
@@ -474,7 +545,6 @@ export function Home() {
                         alt={dish.name}
                         className="w-full h-40 object-cover transition-transform duration-500 hover:scale-105"
                       />
-                      {/* Effet de brillance */}
                       <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
                     </div>
                     <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
@@ -514,13 +584,36 @@ export function Home() {
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                whileHover={{ scale: isDownloading ? 1 : 1.05 }}
+                whileTap={{ scale: isDownloading ? 1 : 0.95 }}
                 onClick={handleDownload}
-                className="bg-white text-green-700 px-8 py-4 rounded-lg font-semibold flex items-center space-x-3 hover:bg-green-50 transition-colors shadow-lg text-lg"
+                disabled={isDownloading}
+                className="relative bg-white text-green-700 px-8 py-4 rounded-lg font-semibold flex items-center space-x-3 hover:bg-green-50 transition-colors shadow-lg text-lg overflow-hidden"
               >
-                <Download className="w-6 h-6" />
-                <span>Télécharger sur Google Play</span>
+                {/* Barre de progression */}
+                {isDownloading && (
+                  <div
+                    className="absolute inset-0 bg-green-200 transition-all duration-300 ease-out"
+                    style={{ width: `${downloadProgress}%` }}
+                  />
+                )}
+
+                <div className="relative z-10 flex items-center space-x-3">
+                  {downloadComplete ? (
+                    <CheckCircle className="w-6 h-6 text-green-600" />
+                  ) : isDownloading ? (
+                    <div className="w-6 h-6 border-2 border-green-600 border-t-transparent rounded-full animate-spin" />
+                  ) : (
+                    <Download className="w-6 h-6" />
+                  )}
+                  <span>
+                    {downloadComplete
+                      ? "Téléchargement terminé !"
+                      : isDownloading
+                      ? `Téléchargement... ${Math.round(downloadProgress)}%`
+                      : "Télécharger sur Google Play"}
+                  </span>
+                </div>
               </motion.button>
 
               <div className="flex items-center space-x-2 text-yellow-300">
@@ -534,10 +627,8 @@ export function Home() {
 
       {/* Company Stats Section */}
       <section className="py-20 bg-gray-900 text-white relative overflow-hidden">
-        {/* Effet de fond */}
         <div className="absolute inset-0 bg-gradient-to-r from-gray-900 to-gray-900"></div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-          {/* En-tête avec logo Solutions RH+ */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -550,8 +641,6 @@ export function Home() {
                 alt="Solutions RH+"
                 className="w-16 h-16 object-contain"
               />
-              {/* <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg"> */}
-              {/* </div> */}
               <div className="text-left">
                 <h3 className="text-xl font-bold text-white">Solutions RH+</h3>
                 <p className="text-blue-300 text-sm">Food Industry</p>
@@ -560,15 +649,13 @@ export function Home() {
             <p className="text-lg text-gray-300 max-w-2xl mx-auto">
               EatSafe fait partie de{" "}
               <strong className="text-blue-400">
-                {" "}
                 Solutions RH+ Food Industry
               </strong>
               , l'une des entreprises du groupe des entreprises de{" "}
-              <strong className="text-blue-400"> Solutions RH+</strong>
+              <strong className="text-blue-400">Solutions RH+</strong>
             </p>
           </motion.div>
 
-          {/* Stats grid */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
@@ -611,33 +698,6 @@ export function Home() {
           </div>
         </div>
       </section>
-
-      {/* CTA Section */}
-      {/* <section className="py-20 bg-yellow-400">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-          >
-            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
-              Vous êtes restaurateur ?
-            </h2>
-            <p className="text-xl text-gray-700 mb-8 max-w-2xl mx-auto">
-              Rejoignez notre réseau de restaurants partenaires et développez
-              votre activité avec EatSafe.
-            </p>
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="bg-gray-900 text-white px-8 py-4 rounded-lg font-semibold flex items-center justify-center space-x-2 hover:bg-gray-800 transition-colors mx-auto"
-            >
-              <Truck className="w-5 h-5" />
-              <span>Devenir partenaire</span>
-            </motion.button>
-          </motion.div>
-        </div>
-      </section> */}
     </div>
   );
 }
