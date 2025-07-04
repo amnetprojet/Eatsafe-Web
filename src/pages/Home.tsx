@@ -138,10 +138,16 @@ export function Home() {
   };
 
   const handleDownload = () => {
-    window.open(
-      "https://play.google.com/store/apps/details?id=com.foodindustry.eatsafe",
-      "_blank"
-    );
+    const link = document.createElement('a');
+    link.href = '/app-release.apk';
+    link.download = 'EatSafe.apk';
+    document.body.appendChild(link);
+    
+    // Déclencher le téléchargement
+    link.click();
+    
+    // Nettoyer
+    document.body.removeChild(link);
   };
 
   const infiniteDishes = [...dishes, ...dishes, ...dishes];
