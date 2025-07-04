@@ -296,7 +296,7 @@ export function Home() {
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4">
-                <motion.button
+                {/* <motion.button
                   ref={downloadButtonRef}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
@@ -311,6 +311,23 @@ export function Home() {
                   <LiquidGlassTooltip show={showTooltip}>
                     Bientôt disponible sur vos plateformes de téléchargement
                   </LiquidGlassTooltip>
+                </motion.button> */}
+                <motion.button
+                  // ref={downloadButtonRef}
+                  // whileHover={{ scale: 1.05 }}
+                  // whileTap={{ scale: 0.95 }}
+                  // onClick={(e) => {
+                  //   e.stopPropagation();
+                  //   setShowTooltip(!showTooltip);
+                  // }}
+                  onClick={handleDownload}
+                  className="relative bg-white text-green-700 px-8 py-4 rounded-lg font-semibold flex items-center justify-center space-x-2 hover:bg-green-50 transition-colors shadow-lg"
+                >
+                  <Download className="w-5 h-5" />
+                  <span>Télécharger l'app</span>
+                  {/* <LiquidGlassTooltip show={showTooltip}>
+                    Bientôt disponible sur vos plateformes de téléchargement
+                  </LiquidGlassTooltip> */}
                 </motion.button>
                 <motion.button
                   whileHover={{ scale: 1.05 }}
