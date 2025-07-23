@@ -139,7 +139,7 @@ export function Home() {
   };
 
   const handleDownload = () => {
-   windiw.open("https://play.google.com/store/apps/details?id=com.foodindustry.eatsafe", "_blank");Ï
+   window.open("https://play.google.com/store/apps/details?id=com.foodindustry.eatsafe", "_blank");Ï
   };
 
   const infiniteDishes = [...dishes, ...dishes, ...dishes];
