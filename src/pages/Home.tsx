@@ -138,71 +138,8 @@ export function Home() {
     );
   };
 
-  const handleDownload = async () => {
-    if (isDownloading) return;
-
-    setIsDownloading(true);
-    setDownloadProgress(0);
-    setDownloadComplete(false);
-
-    try {
-      // Simulation du téléchargement avec XMLHttpRequest pour suivre le progrès
-      const xhr = new XMLHttpRequest();
-
-      xhr.open("GET", "/app-release.apk", true);
-      xhr.responseType = "blob";
-
-      xhr.onprogress = (event) => {
-        if (event.lengthComputable) {
-          const percentComplete = (event.loaded / event.total) * 100;
-          setDownloadProgress(percentComplete);
-        }
-      };
-
-      xhr.onload = () => {
-        if (xhr.status === 200) {
-          setDownloadProgress(100);
-          setDownloadComplete(true);
-
-          // Créer le lien de téléchargement
-          const blob = xhr.response;
-          const url = window.URL.createObjectURL(blob);
-          const link = document.createElement("a");
-          link.href = url;
-          link.download = "EatSafe.apk";
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-          window.URL.revokeObjectURL(url);
-
-          // Réinitialiser après 2 secondes
-          setTimeout(() => {
-            setIsDownloading(false);
-            setDownloadProgress(0);
-            setDownloadComplete(false);
-          }, 2000);
-        }
-      };
-
-      xhr.onerror = () => {
-        // En cas d'erreur, utiliser la méthode classique
-        const link = document.createElement("a");
-        link.href = "/app-release.apk";
-        link.download = "EatSafe.apk";
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-
-        setIsDownloading(false);
-        setDownloadProgress(0);
-      };
-
-      xhr.send();
-    } catch (error) {
-      console.error("Erreur de téléchargement:", error);
-      setIsDownloading(false);
-      setDownloadProgress(0);
-    }
+  const handleDownload = () => {
+   windiw.open("https://play.google.com/store/apps/details?id=com.foodindustry.eatsafe", "_blank");Ï
   };
 
   const infiniteDishes = [...dishes, ...dishes, ...dishes];
